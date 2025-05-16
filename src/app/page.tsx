@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
-type Place = { id: string; name: string; address: string; distanceM: number };
+import { Place } from './api/gyros/route';
 
 export default function Home() {
   const [places, setPlaces] = useState<Place[] | null>(null);
@@ -22,14 +21,14 @@ export default function Home() {
           if (!r.ok) throw new Error(await r.text());
           setPlaces(await r.json());
           setGyrosFound(true);
-        } catch (e: any) {
-          setError(e.message);
+        } catch {
+          setError('Could not find gyros near you.');
           setGyrosFound(false);
         } finally {
           setBusy(false);
         }
       },
-      err => { setError(err.message); setBusy(false); },
+      err => { setError('Could not find gyros near you.'); console.error(err); setBusy(false); },
       { enableHighAccuracy: true, timeout: 15_000 }
     );
   }

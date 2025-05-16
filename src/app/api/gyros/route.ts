@@ -1,5 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define the response type
+export type Place = {
+  id: string;
+  name: string;
+  address: string;
+  distanceM: number;
+};
+
+// Define the Foursquare API response type
+type FoursquareResult = {
+  fsq_id: string;
+  name: string;
+  location: {
+    formatted_address: string;
+  };
+  distance: number;
+};
+
 export async function GET(req: NextRequest) {
   const lat = req.nextUrl.searchParams.get('lat');
   const lon = req.nextUrl.searchParams.get('lon');
@@ -35,7 +53,7 @@ export async function GET(req: NextRequest) {
 
   const { results } = await fsq.json();
 
-  const trimmed = (results as any[])
+  const trimmed: Place[] = (results as FoursquareResult[])
     .filter(p => p.distance <= 1609)           // defensive cutoff
     .map(p => ({
       id:           p.fsq_id,
