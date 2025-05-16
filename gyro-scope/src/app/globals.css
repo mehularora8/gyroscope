@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f2eee6;
+  --foreground: #5b4a3e;
+  --accent-brown: #8b6e5c;
+  --accent-gold: #b5a24c;
+  --accent-beige: #dbd2bd;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #2b241f;
+    --foreground: #f2eee6;
+    --accent-brown: #a68776;
+    --accent-gold: #c7b663;
+    --accent-beige: #dbd2bd;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-barlow), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-tenor-sans {
+  font-family: var(--font-tenor-sans), serif;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+/* Card transitions */
+.gyro-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(212, 244, 242, 0.3);
+}
+
+.gyro-card:hover {
+  transform: translateY(-4px);
+  border-color: #f2eee6;
+}
+
+.gyro-card:hover h3 {
+  color: #f2eee6;
+}
+
+.gyro-card:hover .arrow {
+  transform: translateX(4px);
+  color: #f2eee6;
+}
+
+.gyro-card .arrow {
+  transition: transform 0.2s ease;
+}
+
+.gyro-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #f2eee6;
+  transition: width 0.3s ease;
+}
+
+.gyro-card:hover::after {
+  width: 100%;
+}
