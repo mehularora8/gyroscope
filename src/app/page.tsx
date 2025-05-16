@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Place } from './api/gyros/route';
 
 export default function Home() {
@@ -8,6 +8,25 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [gyrosFound, setGyrosFound] = useState(false);
+  const [permissionState, setPermissionState] = useState<PermissionState | null>(null);
+
+  // Check for location permission status
+  useEffect(() => {
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' })
+        .then(permissionStatus => {
+          setPermissionState(permissionStatus.state);
+          
+          // Listen for permission changes
+          permissionStatus.onchange = () => {
+            setPermissionState(permissionStatus.state);
+          };
+        })
+        .catch(err => {
+          console.error("Permission check error:", err);
+        });
+    }
+  }, []);
 
   async function findGyros() {
     setBusy(true);
@@ -21,16 +40,49 @@ export default function Home() {
           if (!r.ok) throw new Error(await r.text());
           setPlaces(await r.json());
           setGyrosFound(true);
-        } catch {
+        } catch (err) {
           setError('Could not find gyros near you.');
           setGyrosFound(false);
+          console.error("API error:", err);
         } finally {
           setBusy(false);
         }
       },
-      err => { setError('Could not find gyros near you.'); console.error(err); setBusy(false); },
+      err => { 
+        console.error("Geolocation error:", err);
+        setBusy(false);
+        
+        // Provide specific guidance based on error code
+        if (err.code === 1) { // PERMISSION_DENIED
+          setError('Location permission denied. Please enable location services in your device settings to find gyros near you.');
+        } else if (err.code === 2) { // POSITION_UNAVAILABLE
+          setError('Could not determine your location. Please check your device settings.');
+        } else if (err.code === 3) { // TIMEOUT
+          setError('Location request timed out. Please try again when you have a better connection.');
+        } else {
+          setError('Could not find gyros near you.');
+        }
+        
+        setGyrosFound(false);
+      },
       { enableHighAccuracy: true, timeout: 15_000 }
     );
+  }
+
+  function renderPermissionMessage() {
+    if (permissionState === 'denied') {
+      return (
+        <div className="text-center mb-4 fade-in">
+          <p className="text-red-600 mb-2">Location access is blocked</p>
+          <p className="text-sm text-brown-dark">
+            {navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad') ? 
+              "Please enable location in Settings → Safari → Location" :
+              "Please enable location access in your browser or device settings"}
+          </p>
+        </div>
+      );
+    }
+    return null;
   }
 
   return (
@@ -48,6 +100,8 @@ export default function Home() {
             Found {places?.length} gyros near you.
           </p>
         )}
+        
+        {renderPermissionMessage()}
         
         {!gyrosFound && (
           <button

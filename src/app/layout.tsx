@@ -18,6 +18,17 @@ const barlow = Barlow({
 export const metadata: Metadata = {
   title: "Gyroscope",
   description: "Find authentic gyros near you.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  themeColor: "#f2eee6",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Gyroscope"
+  },
+  formatDetection: {
+    telephone: false
+  }
 };
 
 export default function RootLayout({
@@ -26,12 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${tenorSans.variable} ${barlow.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en" className={`${tenorSans.variable} ${barlow.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }
