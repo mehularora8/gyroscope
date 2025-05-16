@@ -21,14 +21,31 @@ export default function Home() {
           if (!r.ok) throw new Error(await r.text());
           setPlaces(await r.json());
           setGyrosFound(true);
-        } catch {
+        } catch (err) {
           setError('Could not find gyros near you.');
           setGyrosFound(false);
+          console.error("API error:", err);
         } finally {
           setBusy(false);
         }
       },
-      err => { setError('Could not find gyros near you.'); console.error(err); setBusy(false); },
+      err => { 
+        console.error("Geolocation error:", err);
+        setBusy(false);
+        
+        // Simple error message based on error code
+        if (err.code === 1) { // PERMISSION_DENIED
+          setError('Location permission denied. Please enable location services in your device settings.');
+        } else if (err.code === 2) { // POSITION_UNAVAILABLE
+          setError('Could not determine your location. Please check your device settings.');
+        } else if (err.code === 3) { // TIMEOUT
+          setError('Location request timed out. Please try again.');
+        } else {
+          setError('Could not find gyros near you.');
+        }
+        
+        setGyrosFound(false);
+      },
       { enableHighAccuracy: true, timeout: 15_000 }
     );
   }
@@ -40,12 +57,12 @@ export default function Home() {
         <h1 className="text-5xl font-tenor-sans text-brown mb-3 tracking-wide fade-in">GYROSCOPE</h1>
         
         <p className="text-base text-brown-dark italic mb-8 text-center fade-in delay-100">
-          Find authentic gyros near you 🌯
+          Find gyros near you 🌯
         </p>
         
         {gyrosFound && (
           <p className="text-base text-brown-dark mb-8 text-center fade-in">
-            Found {places?.length} gyros near you.
+            Found {places?.length} gyros within 2 miles of you.
           </p>
         )}
         

@@ -1,0 +1,8 @@
+{
+  "name": "Gyroscope",
+  "short_name": "Gyroscope",
+  "description": "Find gyros near you",
+  "display": "standalone",
+  "background_color": "#f2eee6",
+  "theme_color": "#f2eee6"
+} 
