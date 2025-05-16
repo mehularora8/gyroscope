@@ -17,18 +17,8 @@ const barlow = Barlow({
 
 export const metadata: Metadata = {
   title: "Gyroscope",
-  description: "Find authentic gyros near you.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-  themeColor: "#f2eee6",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Gyroscope"
-  },
-  formatDetection: {
-    telephone: false
-  }
+  description: "Find gyros near you.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1"
 };
 
 export default function RootLayout({

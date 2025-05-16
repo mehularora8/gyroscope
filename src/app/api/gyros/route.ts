@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
   const { results } = await fsq.json();
 
   const trimmed: Place[] = (results as FoursquareResult[])
-    .filter(p => p.distance <= 1609)           // defensive cutoff
+    .filter(p => p.distance <= 3218)           // defensive cutoff
     .map(p => ({
       id:           p.fsq_id,
       name:         p.name,
